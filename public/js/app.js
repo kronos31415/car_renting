@@ -1988,6 +1988,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1999,6 +2003,14 @@ __webpack_require__.r(__webpack_exports__);
       isLoading: false,
       columns: 3
     };
+  },
+  methods: {
+    bookablesInRow: function bookablesInRow(row) {
+      return this.bookables.slice((row - 1) * this.columns, row * this.columns);
+    },
+    placeholders: function placeholders(row) {
+      return this.columns - this.bookablesInRow(row).length;
+    }
   },
   computed: {
     rows: function rows() {
@@ -37768,23 +37780,43 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("span", [_vm._v("Number of rows: " + _vm._s(_vm.rows))]),
-    _vm._v(" "),
     _vm.isLoading
       ? _c("div", [_vm._v("Loading...")])
       : _c(
           "div",
-          _vm._l(_vm.bookables, function(bookable, index) {
-            return _c("bookable-list-item", {
-              key: index,
-              attrs: {
-                itemTitle: bookable.title,
-                itemContent: bookable.content,
-                price: 1200
-              }
-            })
+          _vm._l(_vm.rows, function(row) {
+            return _c(
+              "div",
+              { key: row + "row", staticClass: "row equal" },
+              [
+                _vm._l(_vm.bookablesInRow(row), function(bookable, index) {
+                  return _c(
+                    "div",
+                    { key: index, staticClass: "col" },
+                    [
+                      _c("bookable-list-item", {
+                        attrs: {
+                          itemTitle: bookable.title,
+                          itemContent: bookable.content,
+                          price: 1200
+                        }
+                      })
+                    ],
+                    1
+                  )
+                }),
+                _vm._v(" "),
+                _vm._l(_vm.placeholders(row), function(placeholder) {
+                  return _c("div", {
+                    key: placeholder + "ph",
+                    staticClass: "col"
+                  })
+                })
+              ],
+              2
+            )
           }),
-          1
+          0
         )
   ])
 }

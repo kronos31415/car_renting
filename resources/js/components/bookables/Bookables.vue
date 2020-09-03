@@ -1,15 +1,19 @@
 <template>
     <div>
-        <span>Number of rows: {{rows}}</span>
         <div v-if="isLoading">Loading...</div>
         <div v-else>
-            <bookable-list-item 
-            v-for="(bookable, index) in bookables"
-            :key="index"
-            :itemTitle="bookable.title" 
-            :itemContent="bookable.content" 
-            :price="1200">
-        </bookable-list-item>
+            <div class="row equal" v-for="row in rows" :key="row + 'row'">
+                <div class="col" 
+                    v-for="(bookable, index) in bookablesInRow(row)" 
+                    :key="index">
+                        <bookable-list-item 
+                            :itemTitle="bookable.title" 
+                            :itemContent="bookable.content" 
+                            :price="1200">
+                        </bookable-list-item>
+                </div>
+                <div class="col" v-for="placeholder in placeholders(row)" :key="placeholder + 'ph'"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -25,6 +29,14 @@ export default {
             bookables: [],
             isLoading: false,
             columns: 3
+        }
+    },
+    methods: {
+        bookablesInRow: function(row) {
+            return this.bookables.slice((row - 1) * this.columns, row * this.columns);
+        },
+        placeholders: function(row) {
+            return  this.columns - this.bookablesInRow(row).length;
         }
     },
     computed: {
