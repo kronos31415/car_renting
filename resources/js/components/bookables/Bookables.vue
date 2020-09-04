@@ -8,7 +8,7 @@
                     :key="index">
                         <bookable-list-item 
                             :itemTitle="bookable.title" 
-                            :itemContent="bookable.content" 
+                            :itemDescription="bookable.description" 
                             :price="1200">
                         </bookable-list-item>
                 </div>
@@ -47,43 +47,11 @@ export default {
     created() {
         this.isLoading = true;
         console.log("created")
-        setTimeout(() => {
-            this.bookables = [
-            {
-                title: "cheap AMG",
-                content: "1000000 pln is a lot o money"
-            },
-            {
-                title: "cheap RS3",
-                content: "200 000 pln is a sales price"
-            },
-            {
-                title: "cheap AMG",
-                content: "1000000 pln is a lot o money"
-            },
-            {
-                title: "cheap AMG",
-                content: "1000000 pln is a lot o money"
-            },
-            {
-                title: "cheap AMG",
-                content: "1000000 pln is a lot o money"
-            },
-            {
-                title: "cheap AMG",
-                content: "1000000 pln is a lot o money"
-            },
-            {
-                title: "cheap AMG",
-                content: "1000000 pln is a lot o money"
-            },
-            {
-                title: "cheap AMG",
-                content: "1000000 pln is a lot o money"
-            }
-        ];
-        this.isLoading = false;
-        }, 2000)
+        axios.get("/api/bookables")
+            .then(response => {
+                this.bookables = response.data;
+                this.isLoading = false;
+            })
     }
 }
 </script>
