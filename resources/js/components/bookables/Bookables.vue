@@ -2,14 +2,14 @@
     <div>
         <div v-if="isLoading">Loading...</div>
         <div v-else>
-            <div class="row equal" v-for="row in rows" :key="row + 'row'">
+            <div class="row" v-for="row in rows" :key="row + 'row'">
                 <div class="col" 
                     v-for="(bookable, index) in bookablesInRow(row)" 
                     :key="index">
                         <bookable-list-item 
-                            :itemTitle="bookable.title" 
-                            :itemDescription="bookable.description" 
-                            :price="1200">
+                            :title="bookable.title" 
+                            :description="bookable.description" 
+                            :id="bookable.id">
                         </bookable-list-item>
                 </div>
                 <div class="col" v-for="placeholder in placeholders(row)" :key="placeholder + 'ph'"></div>

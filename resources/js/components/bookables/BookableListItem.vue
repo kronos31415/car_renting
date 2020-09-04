@@ -1,9 +1,12 @@
 <template>
-    <div>
-        <div class="card text-white bg-success mb-3">
+    <div class="w-100">
+        <div class="card text-white bg-danger mb-3">
             <div class="card-body">
-                <div class="card-title"><h5>{{ itemTitle }}</h5></div>
-                <div class="card-text">{{ itemDescription }}</div>
+                <router-link :to="{name:'bookable', params: {id: id}}">
+                    <div class="card-title"><h5>{{ title }}</h5></div>
+                </router-link>
+                
+                <div class="card-text">{{ description }}</div>
             </div>
         </div>
     </div>
@@ -12,9 +15,14 @@
 export default {
     name: "BookableListItem",
     props: {
-        itemTitle: String,
-        itemDescription: String,
-        price: Number
+        title: String,
+        description: String,
+        id: Number
     }
 }
 </script>
+<style scoped>
+    .card-body a {
+        color: rgb(223, 219, 213);
+    }
+</style>
