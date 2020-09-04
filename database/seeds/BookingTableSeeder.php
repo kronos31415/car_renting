@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Seeder;
+use App\Bookable;
+use App\Booking;
+
+class BookingTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        Bookable::all()->each(function(Bookable $bookable) {
+            $booking = factory(Booking::class)->make();
+            $bookings = collect([$booking]);
+
+            for($i = 0; $i <= random_int(1,10); $i++) {
+                $from = clone($booking->to)->addDays(random_int(2,13));
+                $to = clone($from)->addDays(random_int(1,14));
+                $booking= Booking::make([
+                    'from' => $from,
+                    'to' => $to,
+                ]);
+                $bookings->push($booking);
+            }
+            $bookable->bookings()->saveMany($bookings);
+        });
+    }
+}
