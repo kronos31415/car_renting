@@ -78,7 +78,7 @@ export default {
     label {
         font-size: 0.8rem;
         text-transform: uppercase;
-        color:blueviolet;
+        color: gray;
         font-weight: bolder;
     }
 </style>
