@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Booking extends Model
 {
     protected $filable = ['from', 'to'];
+
+    public function review() {
+        return $this->hasOne(Review::class);
+    }
     public function bookable() {
         return $this->belongsTo(Bookable::class);
     }
