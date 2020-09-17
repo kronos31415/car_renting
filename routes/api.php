@@ -29,4 +29,6 @@ Route::get('bookables/{id}/availability', 'Api\AvailabilityController')->name('b
 
 Route::get('bookables/{bookable}/reviews', 'Api\BookableReviewConroller')->name('bookables.reviews');
 
+Route::get('booking-by-review/{reviewKey}', 'Api\BookingByReviewController')->name('booking.by-review.show');
+
 Route::apiResource('reviews', 'Api\ReviewController')->only(['show']);

@@ -2233,16 +2233,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       review: {
         rating: 5,
         content: null
-      }
+      },
+      existingReview: null,
+      isLoading: false
     };
   },
-  methods: {}
+  methods: {},
+  created: function created() {
+    var _this = this;
+
+    this.isLoading = true;
+    axios.get("/api/reviews/".concat(this.$route.params.id)).then(function (response) {
+      console.log(response);
+      _this.existingReview = response.data;
+    })["catch"](function (error) {
+      return console.log(error);
+    }).then(function () {
+      return _this.isLoading = false;
+    });
+  },
+  computed: {
+    alreadyReviewed: function alreadyReviewed() {
+      return this.existingReview != null;
+    }
+  }
 });
 
 /***/ }),
@@ -60222,32 +60250,48 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c(
-      "div",
-      { staticClass: "form-group" },
-      [
-        _c("label", { staticClass: "text-muted", attrs: { for: "rating" } }, [
-          _vm._v("What is your score for (5 is thebest, 1 is worst)")
-        ]),
-        _vm._v(" "),
-        _c("star-rating", {
-          staticClass: "fa-3x",
-          attrs: { rating: _vm.review.rating },
-          on: {
-            "rating-change": function($event) {
-              _vm.review.rating = $event
-            }
-          }
-        })
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "btn btn-primary btn-block" }, [
-      _vm._v("SEND REVIEW")
-    ])
+    _vm.isLoading
+      ? _c("div", [_vm._v("Loading...")])
+      : _c("div", [
+          _vm.alreadyReviewed
+            ? _c("div", [
+                _c("span", [_vm._v("You have already reviewed that bookable")])
+              ])
+            : _c("div", [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c(
+                      "label",
+                      { staticClass: "text-muted", attrs: { for: "rating" } },
+                      [
+                        _vm._v(
+                          "What is your score for (5 is thebest, 1 is worst)"
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("star-rating", {
+                      staticClass: "fa-3x",
+                      attrs: { rating: _vm.review.rating },
+                      on: {
+                        "rating-change": function($event) {
+                          _vm.review.rating = $event
+                        }
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _vm._m(0),
+                _vm._v(" "),
+                _c("div", { staticClass: "btn btn-primary btn-block" }, [
+                  _vm._v("SEND REVIEW")
+                ])
+              ])
+        ])
   ])
 }
 var staticRenderFns = [
