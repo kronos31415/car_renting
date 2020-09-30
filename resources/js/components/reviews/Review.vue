@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="true"><fatal-error></fatal-error></div>
+        <div v-if="error"><fatal-error></fatal-error></div>
         <div class="row" v-else>
             <div :class="[{'col-md-4': oneColumn}, {'d-none': twoColumns}]">
                 <div class="card">
@@ -54,7 +54,7 @@
     </div>
 </template>
 <script>
-import {is404} from "./../shared/utils/response"
+import {is404, is422} from "./../shared/utils/response"
 export default {
     data() {
         return {
@@ -66,15 +66,26 @@ export default {
             existingReview: null,
             isloading: false,
             booking: null,
-            error: false
+            error: false,
+            errors: null
         }
     },
     methods: {
         submit() {
             this.isloading = true;
+            this.error = false;
             axios.post(`/api/reviews`, this.review)
                 .then(response => console.log(response))
-                .catch(error => this.error = true)
+                .catch(err => {
+                    if (is422(err)) {
+                        const errors = err.response.data.errors;
+                        if(errors["content"] && _.size(errors) === 1) {
+                            this.errors = errors;
+                            return;
+                        }
+                    }
+                    this.error = true;
+                })
                 .then(() => this.isloading = false)
         },
         onRatingChanged(rating) {

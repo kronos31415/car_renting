@@ -2288,7 +2288,8 @@ __webpack_require__.r(__webpack_exports__);
       existingReview: null,
       isloading: false,
       booking: null,
-      error: false
+      error: false,
+      errors: null
     };
   },
   methods: {
@@ -2296,10 +2297,20 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.isloading = true;
+      this.error = false;
       axios.post("/api/reviews", this.review).then(function (response) {
         return console.log(response);
-      })["catch"](function (error) {
-        return _this.error = true;
+      })["catch"](function (err) {
+        if (Object(_shared_utils_response__WEBPACK_IMPORTED_MODULE_0__["is422"])(err)) {
+          var errors = err.response.data.errors;
+
+          if (errors["content"] && _.size(errors) === 1) {
+            _this.errors = errors;
+            return;
+          }
+        }
+
+        _this.error = true;
       }).then(function () {
         return _this.isloading = false;
       });
@@ -60377,9 +60388,172 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    true
+    _vm.error
       ? _c("div", [_c("fatal-error")], 1)
-      : undefined
+      : _c("div", { staticClass: "row" }, [
+          _c(
+            "div",
+            {
+              class: [
+                { "col-md-4": _vm.oneColumn },
+                { "d-none": _vm.twoColumns }
+              ]
+            },
+            [
+              _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "card-body" }, [
+                  _vm.isloading ? _c("div", [_vm._v("Loading...")]) : _vm._e(),
+                  _vm._v(" "),
+                  _vm.hasBooking
+                    ? _c("div", [
+                        _c(
+                          "p",
+                          [
+                            _vm._v("\n                            Stayed at "),
+                            _c(
+                              "router-link",
+                              {
+                                attrs: {
+                                  to: {
+                                    name: "bookable",
+                                    params: { id: _vm.booking.bookable.id }
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(_vm.booking.bookable.title) +
+                                    "\n                        "
+                                )
+                              ]
+                            )
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "\n                            From " +
+                              _vm._s(_vm.booking.from) +
+                              " to " +
+                              _vm._s(_vm.booking.to) +
+                              "\n                        "
+                          )
+                        ])
+                      ])
+                    : _vm._e()
+                ])
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              class: [
+                { "col-md-8": _vm.oneColumn },
+                { "col-md-12": _vm.twoColumns }
+              ]
+            },
+            [
+              _c("div", [
+                _vm.isloading
+                  ? _c("div", [
+                      _vm._v("\n                Loading...\n            ")
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.hasBooking
+                  ? _c("div", [
+                      _vm.alreadyReviewed
+                        ? _c("div", [
+                            _c("h3", [
+                              _vm._v("You already reviewed this booking")
+                            ])
+                          ])
+                        : _c("div", [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c("label", { staticClass: "text-dark" }, [
+                                  _vm._v(
+                                    "Slect what you think (1 star is bad, 5 i best)"
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("star-rating", {
+                                  staticClass: "fa-3x",
+                                  attrs: { rating: _vm.review.rating },
+                                  on: {
+                                    "rating-change": function($event) {
+                                      _vm.review.rating = $event
+                                    }
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "text-dark",
+                                  attrs: { for: "content" }
+                                },
+                                [_vm._v("Please leave a coment:")]
+                              ),
+                              _vm._v(" "),
+                              _c("textarea", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.review.content,
+                                    expression: "review.content"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { name: "content", col: "5", rows: "3" },
+                                domProps: { value: _vm.review.content },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.review,
+                                      "content",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-lg btn-primary btn-block",
+                                attrs: { disabled: _vm.isloading },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.submit($event)
+                                  }
+                                }
+                              },
+                              [_vm._v("SAVE")]
+                            )
+                          ])
+                    ])
+                  : _vm._e()
+              ])
+            ]
+          )
+        ])
   ])
 }
 var staticRenderFns = []
@@ -76444,14 +76618,18 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************************!*\
   !*** ./resources/js/components/shared/utils/response.js ***!
   \**********************************************************/
-/*! exports provided: is404 */
+/*! exports provided: is404, is422 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is404", function() { return is404; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is422", function() { return is422; });
 var is404 = function is404(err) {
   return err.response && err.response.status && 404 == err.response.status;
+};
+var is422 = function is422(err) {
+  return err.response && err.response.status && 422 == err.response.status;
 };
 
 /***/ }),
