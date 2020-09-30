@@ -1,7 +1,6 @@
 <template>
     <div>
-        <div class="row" v-if="error">Some errors occured. Please try again later</div>
-
+        <div v-if="true"><fatal-error></fatal-error></div>
         <div class="row" v-else>
             <div :class="[{'col-md-4': oneColumn}, {'d-none': twoColumns}]">
                 <div class="card">
