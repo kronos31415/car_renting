@@ -60,7 +60,9 @@
 </template>
 <script>
 import {is404, is422} from "./../shared/utils/response"
+import validationErrorMixin from "./../shared/mixins/validationErrorMixin"
 export default {
+    mixin: [validationErrorMixin],
     data() {
         return {
             review: {
@@ -72,7 +74,6 @@ export default {
             isloading: false,
             booking: null,
             error: false,
-            errors: null,
             sending: false
         }
     },
@@ -96,9 +97,6 @@ export default {
         },
         onRatingChanged(rating) {
             console.log(rating);
-        },
-        errorsFor: function(field) {
-            return this.errors != null && this.errors[field] ? this.errors[field] : null;
         }
     },
     created() {

@@ -27,13 +27,14 @@
 </template>
 
 <script>
+import validationErrorMixin from "./../shared/mixins/validationErrorMixin"
 export default {
+    mixins: [validationErrorMixin],
     data: function() {
         return {
             from: null,
             to: null,
             status: null,
-            errors: null,
             isLoading: false
         }
     }, 
@@ -55,9 +56,6 @@ export default {
                     this.status = error.response.status;
                 })
                 .then(() => this.isLoading = false);
-        },
-        errorsFor: function(field) {
-            return this.hasErrors && this.errors[field] ? this.errors[field] : null;
         }
     },
     computed :{
