@@ -10,10 +10,8 @@
                 <input type="date" class="form-control form-control-sm" id="from" placeholder="From date"
                     v-model="from"
                     v-on:keyup.enter="check"
-                    :class="[{'is-invalid': this.hasErrors}]">
-                <div class="invalid-feedback d-flex" v-for="(error, i) in this.errorsFor('from')" :key="'from' + i">
-                    {{error}}
-                </div>
+                    :class="[{'is-invalid': this.errorsFor('from')}]">
+                <validation-errors :errors="this.errorsFor('from')"></validation-errors>
             </div>
             <div class="form-group col-md-6">
                 <label for="to">TO</label>
@@ -21,9 +19,7 @@
                     v-model="to"
                     v-on:keyup.enter="check"
                     :class="[{'is-invalid': this.errorsFor('to')}]">
-                    <div class="invalid-feedback d-flex" v-for="(error, i) in this.errorsFor('to')" :key="'to' + i">
-                        {{error}}
-                    </div>
+                    <validation-errors :errors="this.errorsFor('to')"></validation-errors>
             </div>
             <button class="btn btn-secondary btn-block mr-1 ml-1" @click.prevent="check" :disabled="isLoading">CHECK</button>
         </div>

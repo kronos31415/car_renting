@@ -40,12 +40,17 @@
                                 
                             <div class="form-group">
                                 <label for="content" class="text-dark">Please leave a coment:</label>
-                                <textarea class="form-control" name="content" col="5" rows="3" v-model="review.content"></textarea>
+                                <textarea 
+                                    class="form-control" name="content" col="5" rows="3" 
+                                    v-model="review.content"
+                                    :class="[{'is-invalid': errorsFor('content')}]">
+                                </textarea>
+                                <validation-errors :errors="this.errorsFor('content')"></validation-errors>
                             </div>
 
                             <button class="btn btn-lg btn-primary btn-block" 
                                 @click.prevent = "submit" 
-                                :disabled="isloading">SAVE</button>
+                                :disabled="sending">SAVE</button>
                         </div>
                         </div>
                 </div>
@@ -67,12 +72,13 @@ export default {
             isloading: false,
             booking: null,
             error: false,
-            errors: null
+            errors: null,
+            sending: false
         }
     },
     methods: {
         submit() {
-            this.isloading = true;
+            this.sending = true;
             this.error = false;
             axios.post(`/api/reviews`, this.review)
                 .then(response => console.log(response))
@@ -86,10 +92,13 @@ export default {
                     }
                     this.error = true;
                 })
-                .then(() => this.isloading = false)
+                .then(() => this.sending = false)
         },
         onRatingChanged(rating) {
             console.log(rating);
+        },
+        errorsFor: function(field) {
+            return this.errors != null && this.errors[field] ? this.errors[field] : null;
         }
     },
     created() {
