@@ -10,6 +10,6 @@ $factory->define(Review::class, function (Faker $faker) {
     return [
         'id' =>Str::uuid(),
         'content' => $faker->sentence(3, true),
-        'review' => random_int(1, 5)
+        'rating' => random_int(1, 5)
     ];
 });
