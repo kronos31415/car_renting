@@ -39,7 +39,7 @@ export default {
         }
     }, 
     props: {
-        bookableId: String
+        bookableId: [String, Number]
     },
     methods: {
         check: function() {
