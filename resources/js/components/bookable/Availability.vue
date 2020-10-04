@@ -32,8 +32,8 @@ export default {
     mixins: [validationErrorMixin],
     data: function() {
         return {
-            from: null,
-            to: null,
+            from: this.$store.state.lastSearch.from,
+            to: this.$store.state.lastSearch.to,
             status: null,
             isLoading: false
         }
@@ -45,6 +45,11 @@ export default {
         check: function() {
             this.errors = null;
             this.isLoading = true;
+            this.$store.dispatch('setLastSearchGlobaly', {
+                from: this.from,
+                to: this.to
+            })
+            console.log(this.$store.state.lastSearch);
             axios.get(`/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`)
                 .then(response => {
                     this.status = response.status;

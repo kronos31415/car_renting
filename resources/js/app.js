@@ -8,7 +8,7 @@ import StarRating from "./components/shared/components/StarRating"
 import FatalError from "./components/shared/components/FatalError"
 import Success from "./components/shared/components/Success.vue"
 import ValidationErrors from "./components/shared/components/ValidationErrors.vue"
-import storeDefiniton from "./store"
+import storeDefiniton from "./store.js"
 
 window.Vue = require('vue');
 Vue.filter("fromNowDate", value => moment(value).fromNow());
