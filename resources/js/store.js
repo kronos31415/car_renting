@@ -7,12 +7,12 @@ export default {
     },
     mutations: {
         setLastSearch(state, payload) {
-            state.lastSearch = payload
+            state.lastSearch = payload;
         }
     },
     actions: {
-        setLastSearchGlobaly({ commit }, payload) {
-            commit('setLastSearch');
+        setLastSearch({ commit }, payload) {
+            commit('setLastSearch', payload);
             localStorage.setItem('lastSearch', JSON.stringify(payload))
         },
         loadLastSearch(context) {

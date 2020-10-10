@@ -1,8 +1,10 @@
 <template>
     <div>
         <h6 class="text-secondary text-uppercase text-center font-weight-bold">Check availability
-            <span class="text-success" v-if="hasAvailability">(AVAILABLE)</span>
-            <span class="text-danger" v-if="noAvailability">(NOT AVAILABLE)</span>
+            <transition name="fade">
+                <span class="text-success" v-if="hasAvailability">(AVAILABLE)</span>
+                <span class="text-danger" v-if="noAvailability">(NOT AVAILABLE)</span>
+            </transition> 
         </h6>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -21,7 +23,10 @@
                     :class="[{'is-invalid': this.errorsFor('to')}]">
                     <validation-errors :errors="this.errorsFor('to')"></validation-errors>
             </div>
-            <button class="btn btn-secondary btn-block mr-1 ml-1" @click.prevent="check" :disabled="isLoading">CHECK</button>
+            <button class="btn btn-secondary btn-block mr-1 ml-1" @click.prevent="check" :disabled="isLoading">
+                <span v-if="!isLoading">CHECK</span>
+                <span v-if="isLoading"><i class="fas fa-spinner fa-pulse"></i> Checking...</span>
+            </button>
         </div>
     </div>
 </template>
@@ -42,25 +47,25 @@ export default {
         bookableId: [String, Number]
     },
     methods: {
-        check: function() {
+        check: async function() {
             this.errors = null;
             this.isLoading = true;
-            this.$store.dispatch('setLastSearchGlobaly', {
+            this.$store.dispatch('setLastSearch', {
                 from: this.from,
                 to: this.to
             })
-            console.log(this.$store.state.lastSearch);
-            axios.get(`/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`)
-                .then(response => {
-                    this.status = response.status;
-                })
-                .catch(error => {
-                    if (422 === error.response.status) {
-                        this.errors = error.response.data.errors;
-                    }
-                    this.status = error.response.status;
-                })
-                .then(() => this.isLoading = false);
+            
+            try {
+                this.status = (await axios.get(`/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`)).status;
+                this.$emit("availability", this.hasAvailability)
+            } catch(err) {
+                if (422 === err.response.status) {
+                    this.errors = err.response.data.errors;
+                }
+                this.status = err.response.status;
+                this.$emit("availability", this.hasAvailability)
+            }
+            this.isLoading = false;
         }
     },
     computed :{
