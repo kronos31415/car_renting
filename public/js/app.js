@@ -2199,6 +2199,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee, null, [[5, 11]]);
       }))();
+    },
+    addToBasket: function addToBasket() {
+      this.$store.commit('addToBasket', {
+        bookable: this.bookable,
+        dates: this.lastSearch,
+        price: this.price
+      });
     }
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapState"])({
@@ -61355,7 +61362,15 @@ var render = function() {
           _vm.price
             ? _c(
                 "button",
-                { staticClass: " mt-4 btn btn-block btn-outline-primary" },
+                {
+                  staticClass: " mt-4 btn btn-block btn-outline-primary",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.addToBasket($event)
+                    }
+                  }
+                },
                 [_vm._v("BOOK NOW")]
               )
             : _vm._e()
@@ -61840,7 +61855,11 @@ var render = function() {
               "pt-2 pb-2 border-bottom border-top d-flex justify-content-between"
           },
           [
-            _c("span", [_vm._v(_vm._s(days) + " * $" + _vm._s(price))]),
+            _c("span", [
+              _vm._v(_vm._s(days) + " "),
+              _c("i", { staticClass: "fas fa-times" }),
+              _vm._v(" $" + _vm._s(price))
+            ]),
             _vm._v(" "),
             _c("span", [_vm._v("$" + _vm._s(days * price))])
           ]
@@ -61854,7 +61873,7 @@ var render = function() {
             "pt-2 pb-2 border-bottom border-top d-flex justify-content-between"
         },
         [
-          _c("span", [_vm._v("Total:")]),
+          _vm._m(0),
           _vm._v(" "),
           _c("span", [_vm._v("$" + _vm._s(_vm.price.price))])
         ]
@@ -61863,7 +61882,17 @@ var render = function() {
     2
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _vm._v("Total: "),
+      _c("i", { staticClass: "fas fa-calculator" })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -79566,11 +79595,20 @@ __webpack_require__.r(__webpack_exports__);
     lastSearch: {
       from: null,
       to: null
-    }
+    },
+    items: []
   },
   mutations: {
     setLastSearch: function setLastSearch(state, payload) {
       state.lastSearch = payload;
+    },
+    addToBasket: function addToBasket(state, payload) {
+      state.items.push(payload);
+    },
+    removeFromBasket: function removeFromBasket(state, payload) {
+      state.items = this.state.items.filter(function (item) {
+        return item !== payload;
+      });
     }
   },
   actions: {

@@ -3,11 +3,18 @@ export default {
         lastSearch: {
             from: null,
             to: null
-        }
+        },
+        items: [],
     },
     mutations: {
         setLastSearch(state, payload) {
             state.lastSearch = payload;
+        },
+        addToBasket(state, payload) {
+            state.items.push(payload);
+        },
+        removeFromBasket(state, payload) {
+            state.items = this.state.items.filter(item => item !== payload);
         }
     },
     actions: {
