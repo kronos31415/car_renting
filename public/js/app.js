@@ -1956,7 +1956,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     itemsInBasket: "itemsInBasket"
   })),
   beforeCreate: function beforeCreate() {
-    this.$store.dispatch('loadLastSearch');
+    this.$store.dispatch('loadStoredState');
   }
 });
 
@@ -2111,6 +2111,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -2209,37 +2215,34 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     addToBasket: function addToBasket() {
-      this.$store.commit('addToBasket', {
+      this.$store.dispatch('addToBasket', {
         bookable: this.bookable,
         dates: this.lastSearch,
         price: this.price
       });
     },
     removeFromBasket: function removeFromBasket() {
-      this.$store.commit('removeFromBasket', this.bookable.id);
+      this.$store.dispatch('removeFromBasket', this.bookable.id);
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapState"])({
-    lastSearch: "lastSearch",
-    isInBasketAlready: function isInBasketAlready(state) {
-      var _this2 = this;
-
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapState"])({
+    lastSearch: "lastSearch"
+  })), {}, {
+    isInBasketAlready: function isInBasketAlready() {
       if (this.bookable == null) {
         return false;
       }
 
-      return state.basket.items.reduce(function (result, item) {
-        return result || item.bookable.id == _this2.bookable.id;
-      }, false);
+      return this.$store.getters.isInBasketAlready(this.bookable.id);
     }
   }),
   created: function created() {
-    var _this3 = this;
+    var _this2 = this;
 
     this.isLoading = true;
     axios.get("/api/bookables/".concat(this.$route.params.id)).then(function (response) {
-      _this3.bookable = response.data;
-      _this3.isLoading = false;
+      _this2.bookable = response.data;
+      _this2.isLoading = false;
     })["catch"](function (error) {
       return consol.log(error);
     });
@@ -79738,6 +79741,9 @@ __webpack_require__.r(__webpack_exports__);
       state.basket.items = state.basket.items.filter(function (item) {
         return item.bookable.id !== payload;
       });
+    },
+    setBasket: function setBasket(state, payload) {
+      state.basket = payload;
     }
   },
   actions: {
@@ -79746,17 +79752,42 @@ __webpack_require__.r(__webpack_exports__);
       commit('setLastSearch', payload);
       localStorage.setItem('lastSearch', JSON.stringify(payload));
     },
-    loadLastSearch: function loadLastSearch(context) {
+    loadStoredState: function loadStoredState(context) {
       var lastSearch = localStorage.getItem("lastSearch");
 
       if (lastSearch) {
         context.commit('setLastSearch', JSON.parse(lastSearch));
       }
+
+      var basket = localStorage.getItem("basket");
+
+      if (basket) {
+        context.commit('setBasket', JSON.parse(basket));
+      }
+    },
+    addToBasket: function addToBasket(_ref2, payload) {
+      var commit = _ref2.commit,
+          state = _ref2.state;
+      commit('addToBasket', payload);
+      localStorage.setItem('basket', JSON.stringify(state.basket));
+    },
+    removeFromBasket: function removeFromBasket(_ref3, payload) {
+      var commit = _ref3.commit,
+          state = _ref3.state;
+      commit('removeFromBasket', payload);
+      localStorage.setItem('basket', JSON.stringify(state.basket));
     }
   },
   getters: {
     itemsInBasket: function itemsInBasket(state) {
       return state.basket.items.length;
+    },
+    isInBasketAlready: function isInBasketAlready(state) {
+      return function (id) {
+        return state.basket.items.reduce(function (result, item) {
+          return result || item.bookable.id == id;
+        }, false);
+      };
     }
   }
 });

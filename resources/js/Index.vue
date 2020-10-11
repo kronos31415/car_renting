@@ -31,7 +31,7 @@ export default {
         })
     },
     beforeCreate() {
-        this.$store.dispatch('loadLastSearch')
+        this.$store.dispatch('loadStoredState')
     }
 }
 </script>

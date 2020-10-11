@@ -65,26 +65,28 @@ export default {
             }
         },
         addToBasket() {
-            this.$store.commit('addToBasket', {
+            this.$store.dispatch('addToBasket', {
                 bookable: this.bookable,
                 dates: this.lastSearch,
                 price: this.price
             })
         },
         removeFromBasket() {
-            this.$store.commit('removeFromBasket', this.bookable.id)
+            this.$store.dispatch('removeFromBasket', this.bookable.id)
         }
     },
-    computed: mapState({
+    computed: {
+        ...mapState({
             lastSearch: "lastSearch",
-            isInBasketAlready(state) {
-                if(this.bookable == null) {
-                    return false;
-                }
-
-                return state.basket.items.reduce((result, item) => result || item.bookable.id == this.bookable.id, false);
-            }
+            
         }),
+        isInBasketAlready() {
+            if(this.bookable == null) {
+                return false;
+            }
+            return this.$store.getters.isInBasketAlready(this.bookable.id);
+        }
+    },
     created() {
         this.isLoading = true;
         axios.get(`/api/bookables/${this.$route.params.id}`)
