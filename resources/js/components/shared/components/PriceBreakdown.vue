@@ -8,7 +8,7 @@
             <span>${{days * price}}</span>
         </div>
         <div class="pt-2 pb-2 border-bottom border-top d-flex justify-content-between">
-            <span>Total: <i class="fas fa-calculator"></i></span>
+            <span class="font-weight-bold">Total: <i class="fas fa-calculator"></i></span>
             <span>${{price.price}}</span>
         </div>
     </div>

@@ -31,7 +31,7 @@ export default {
         }
     },
     props: {
-        bookableId: String
+        bookableId: [String, Number]
     },
     created: function() {
         axios.get(`/api/bookables/${this.bookableId}/reviews`)

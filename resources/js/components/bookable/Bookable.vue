@@ -17,12 +17,17 @@
         </div>
         <div class="col-md-4 pb-3">
             <availability :bookableId="this.$route.params.id" @availability="checkPrice"></availability>
-            <transition name="fade">
+            <transition>
                 <price-breakdown v-if="price" :price="price" class="pt-4 pb-4"></price-breakdown>
             </transition>
             <transition name="fade">
-                <button v-if="price" class=" mt-4 btn btn-block btn-outline-primary" @click.prevent="addToBasket">BOOK NOW</button>
+                <button v-if="price" :disabled="isInBasketAlready" class=" mt-4 btn btn-block btn-outline-primary" @click.prevent="addToBasket">BOOK NOW</button>
             </transition>
+
+            <transition name="fade">
+                <button v-if="isInBasketAlready" :disabled="!isInBasketAlready" class=" mt-4 btn btn-block btn-outline-primary" @click.prevent="removeFromBasket">Remove</button>
+            </transition>
+            <div v-if="isInBasketAlready" class="mt-4 text-muted text-danger warning">This Item is already added. To add with different days please remove first</div>
             
         </div>
 
@@ -49,8 +54,6 @@ export default {
     },
     methods: {
         async checkPrice(hasAvailability) {
-            console.log(hasAvailability)
-            console.log(this.lastSearch.from)
             if(!hasAvailability) {
                 this.price = null;
                 return
@@ -67,13 +70,21 @@ export default {
                 dates: this.lastSearch,
                 price: this.price
             })
+        },
+        removeFromBasket() {
+            this.$store.commit('removeFromBasket', this.bookable.id)
         }
     },
-    computed: 
-        mapState({
-            lastSearch: "lastSearch"
-        })
-    ,
+    computed: mapState({
+            lastSearch: "lastSearch",
+            isInBasketAlready(state) {
+                if(this.bookable == null) {
+                    return false;
+                }
+
+                return state.basket.items.reduce((result, item) => result || item.bookable.id == this.bookable.id, false);
+            }
+        }),
     created() {
         this.isLoading = true;
         axios.get(`/api/bookables/${this.$route.params.id}`)
@@ -85,3 +96,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .warning {
+        font-size: 0.8rem;
+        color: red
+    }
+</style>

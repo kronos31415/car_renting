@@ -4,17 +4,19 @@ export default {
             from: null,
             to: null
         },
-        items: [],
+        basket: {
+            items: [],
+        }
     },
     mutations: {
         setLastSearch(state, payload) {
             state.lastSearch = payload;
         },
         addToBasket(state, payload) {
-            state.items.push(payload);
+            state.basket.items.push(payload);
         },
         removeFromBasket(state, payload) {
-            state.items = this.state.items.filter(item => item !== payload);
+            state.basket.items = state.basket.items.filter(item => item.bookable.id !== payload);
         }
     },
     actions: {
@@ -29,5 +31,10 @@ export default {
             }
         }
 
+    },
+    getters: {
+        itemsInBasket(state) {
+            return state.basket.items.length;
+        }
     }
 }
