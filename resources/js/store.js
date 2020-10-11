@@ -55,6 +55,9 @@ export default {
             return function(id) {
                 return state.basket.items.reduce((result, item) => result || item.bookable.id == id, false);
             }
+        },
+        getTotalPrice(state) {
+            return state.basket.items.reduce((result, item) => result + item.price.price, 0);
         }
     }
 }

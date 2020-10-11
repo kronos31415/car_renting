@@ -2,7 +2,7 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
             <router-link :to="{name: 'home', params: {}}" class="navbar-brand mr-auto">Link to Home PAge</router-link>
-            <router-link class="btn nav-button" :to="{name: 'home', params: {}}">
+            <router-link class="btn nav-button basket" :to="{name: 'basket'}">
                <i class="fas fa-shopping-cart fa-lg"></i>
                <span v-if="itemsInBasket" class="badge badge-pill badge-success">{{itemsInBasket}}</span>
             </router-link>
@@ -35,3 +35,19 @@ export default {
     }
 }
 </script>
+<style scoped>
+
+    .basket:hover {
+    animation: shake 0.5s ;
+    transform: translate3d(0, 0, 0);
+    }
+    @keyframes shake {
+        10%, 90% {
+            transform: translate3d(-1px, 0, 0);
+        }
+
+        40%, 60% {
+            transform: translate3d(4px, 0, 0);
+        }
+    }
+</style>

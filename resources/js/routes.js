@@ -2,6 +2,7 @@ import VueRouter from 'vue-router';
 import Bookables from "./components/bookables/Bookables";
 import Bookable from "./components/bookable/Bookable"
 import Review from "./components/reviews/Review"
+import Basket from "./components/basket/Basket"
 
 const routes = [{
         path: "/",
@@ -17,6 +18,11 @@ const routes = [{
         path: "/review/:id",
         component: Review,
         name: "review"
+    },
+    {
+        path: "/bookables/basket",
+        component: Basket,
+        name: "basket"
     }
 ]
 

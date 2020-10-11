@@ -17007,7 +17007,7 @@ a.text-dark:focus {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 1.5s;
+  transition: opacity 0.5s;
 }
 
 .fade-enter,
@@ -17017,7 +17017,7 @@ a.text-dark:focus {
 
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 2s ease;
+  transition: opacity 1s ease;
 }
 
 .v-enter-from,
