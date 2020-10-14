@@ -25,6 +25,10 @@ class Booking extends Model
         return static::where('review_key', $id)->with('bookable')->get()->first();
     } 
 
+    public function address() {
+        return $this->belongsTo(Address::class);
+    }
+
     public static function boot() {
         parent::boot();
         static::creating(function(Booking $booking) {
