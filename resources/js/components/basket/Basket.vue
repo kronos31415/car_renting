@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="row shadow p-3 mb-5 rounded">
-            <div class="col-md-7">
+            <div class="col-md-7" v-if="itemsInBasket">
                 Checkout Form
                 <!-- first name and last name -->
                 <div class="row">
@@ -53,8 +53,13 @@
 
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <button class="btn btn-info btn-block">Book now</button>
+                        <button type="submit" class="btn btn-info btn-block" @click.prevent="book">Book now</button>
                     </div>    
+                </div>
+            </div>
+            <div class="col-md-7" v-else>
+                <div class="jumbotron jumbotron-fluid text-center">
+                    <h2>Empty basket</h2>
                 </div>
             </div>
             <div class="col-md-5">
@@ -103,9 +108,12 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
+import validationErrors from "./../shared/mixins/validationErrorMixin";
 export default {
+    mixins: [validationErrors],
     data: function() {
         return {
+            isLoading: false,
             customer: {
                 first_name: null,
                 last_name: null,
@@ -128,6 +136,23 @@ export default {
         })
     },
     methods: {
+        async book() {
+            this.isLoading = true;
+
+            try {
+                await axios.post('/api/checkout', {
+                    customer: this.customer,
+                    bookings: this.basket.map(basketItem => ({
+                        bookable_id: basketItem.bookable.id,
+                        from: basketItem.dates.from,
+                        to: basketItem.dates.to
+                    }))
+                })
+            } catch (err) {
+                console.log(err)
+            }
+            
+        },
         ...mapActions([
             'removeFromBasket'
         ])

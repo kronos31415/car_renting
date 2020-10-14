@@ -37,7 +37,7 @@ class CheckoutController extends Controller
             'bookings.*' => ['required', function($attribute, $value, $fail) {
                 $bookable = Bookable::findOrFail($value['bookable_id']);
                 if(!$bookable->checkAvailability($value['from'], $value['to'])) {
-                    $fail('The object is not available for presented dates.');
+                    $fail('The object is not available for presented dates. Trlalala Buka stara :)');
                 }
             }]
         ]));
