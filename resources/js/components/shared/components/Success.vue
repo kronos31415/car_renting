@@ -2,7 +2,9 @@
     <div class="error text-center">
         <i class="fas fa-car-alt"></i>
         <h1 class="mt-4">Success !!!</h1>
-        <h2>Your review was aded to this car</h2>
+        <h2>
+            <slot></slot>
+        </h2>
     </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="success"><success></success></div>
+        <div v-if="success"><success>Your review was aded to this car</success></div>
         <div v-if="error"><fatal-error></fatal-error></div>
         <div class="row" v-if="!success && !error">
             <div :class="[{'col-md-4': oneColumn}, {'d-none': twoColumns}]">

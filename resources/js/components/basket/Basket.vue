@@ -1,17 +1,22 @@
 <template>
     <div>
-        <div class="row shadow p-3 mb-5 rounded">
+        <div v-if="success"><success>Yupiiiii. Success book that car:)</success></div>
+        <div v-else class="row shadow p-3 mb-5 rounded">
             <div class="col-md-7" v-if="itemsInBasket">
                 Checkout Form
                 <!-- first name and last name -->
                 <div class="row">
                     <div class="col-md-6 form-group-row">
                         <label for="first_name">First Name</label>
-                        <input type="text" class="form-control" id="first_name" placeholder="First Name..." v-model="customer.first_name">
+                        <input type="text" class="form-control" id="first_name" placeholder="First Name..." v-model="customer.first_name"
+                            :class="[{'is-invalid': errorsFor('customer.first_name')}]">
+                        <validation-errors :errors="this.errorsFor('customer.first_name')"></validation-errors>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" placeholder="Last Name..." v-model="customer.last_name">
+                        <input type="text" class="form-control" id="last_name" placeholder="Last Name..." v-model="customer.last_name"
+                            :class="[{'is-invalid': errorsFor('customer.last_name')}]">
+                        <validation-errors :errors="this.errorsFor('customer.last_name')"></validation-errors>
                     </div>
                 </div>
 
@@ -19,7 +24,9 @@
                 <div class="row">
                     <div class="col-md-12 form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Email..." v-model="customer.email">
+                        <input type="email" class="form-control" id="email" placeholder="Email..." v-model="customer.email"
+                        :class="[{'is-invalid': errorsFor('customer.email')}]">
+                        <validation-errors :errors="this.errorsFor('customer.email')"></validation-errors>
                     </div>
                 </div>
 
@@ -27,11 +34,15 @@
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="city">City</label>
-                        <input type="text" class="form-control" id="city" placeholder="City..." v-model="customer.city">
+                        <input type="text" class="form-control" id="city" placeholder="City..." v-model="customer.city"
+                        :class="[{'is-invalid': errorsFor('customer.city')}]">
+                        <validation-errors :errors="this.errorsFor('customer.city')"></validation-errors>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="street">Street</label>
-                        <input type="text" class="form-control" id="street" placeholder="Street..." v-model="customer.street">
+                        <input type="text" class="form-control" id="street" placeholder="Street..." v-model="customer.street"
+                        :class="[{'is-invalid': errorsFor('customer.street')}]">
+                        <validation-errors :errors="this.errorsFor('customer.street')"></validation-errors>
                     </div>
                 </div>
 
@@ -39,21 +50,27 @@
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="country">Country</label>
-                        <input type="text" class="form-control" id="country" placeholder="Country..." v-model="customer.country">
+                        <input type="text" class="form-control" id="country" placeholder="Country..." v-model="customer.country"
+                        :class="[{'is-invalid': errorsFor('customer.country')}]">
+                        <validation-errors :errors="this.errorsFor('customer.country')"></validation-errors>
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="state">State</label>
-                        <input type="text" class="form-control" id="state" placeholder="State..." v-model="customer.state">
+                        <input type="text" class="form-control" id="state" placeholder="State..." v-model="customer.state"
+                        :class="[{'is-invalid': errorsFor('customer.state')}]">
+                        <validation-errors :errors="this.errorsFor('customer.state')"></validation-errors>
                     </div>
                     <div class="col-md-2 form-group">
                         <label for="zip">Zip</label>
-                        <input type="text" class="form-control" id="zip" placeholder="Zip..." v-model="customer.zip">
+                        <input type="text" class="form-control" id="zip" placeholder="Zip..." v-model="customer.zip"
+                        :class="[{'is-invalid': errorsFor('customer.zip')}]">
+                        <validation-errors :errors="this.errorsFor('customer.zip')"></validation-errors>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <button type="submit" class="btn btn-info btn-block" @click.prevent="book">Book now</button>
+                        <button type="submit" class="btn btn-info btn-block" :disabled="isLoading" @click.prevent="book">Book now</button>
                     </div>    
                 </div>
             </div>
@@ -96,7 +113,7 @@
                         </div>
                     </div>
                 </transition-group>
-                <div class="pt-2 pb-2 d-flex justify-content-between border-top summary">
+                <div v-if="itemsInBasket" class="pt-2 pb-2 d-flex justify-content-between border-top summary">
                             <span>Total: <i class="fas fa-calculator"></i></span>
                             <span><i class="fas fa-dollar-sign"></i> {{totalPrice | decimalAmount}}</span>
                         </div>
@@ -114,6 +131,7 @@ export default {
     data: function() {
         return {
             isLoading: false,
+            successBook: false,
             customer: {
                 first_name: null,
                 last_name: null,
@@ -133,12 +151,16 @@ export default {
         ...mapGetters({
             itemsInBasket: 'itemsInBasket',
             totalPrice: 'getTotalPrice'
-        })
+        }),
+        success() {
+            return !this.isLoading && this.itemsInBasket == 0 && this.successBook;
+        }
     },
     methods: {
         async book() {
             this.isLoading = true;
-
+            this.errors = null;
+            this.successBook =false;
             try {
                 await axios.post('/api/checkout', {
                     customer: this.customer,
@@ -147,14 +169,17 @@ export default {
                         from: basketItem.dates.from,
                         to: basketItem.dates.to
                     }))
-                })
+                });
+                this.$store.dispatch('clearBasket');
+                this.successBook = true;
             } catch (err) {
-                console.log(err)
+                this.errors = err.response && err.response.data.errors;
             }
+            this.isLoading = false;
             
         },
         ...mapActions([
-            'removeFromBasket'
+            'removeFromBasket',
         ])
     },
     filters: {
