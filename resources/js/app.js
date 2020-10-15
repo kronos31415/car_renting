@@ -30,12 +30,7 @@ const app = new Vue({
     components: {
         Index
     },
-    // async beforeCreate() {
-    //     await axios.get('/sanctum/csrf-cookie');
-    //     await axios.post('login', {
-    //         email: 'wrogahn@example.org',
-    //         password: 'password'
-    //     });
-    //     await axios.get('/user')
-    // }
+    async beforeCreate() {
+
+    }
 });
