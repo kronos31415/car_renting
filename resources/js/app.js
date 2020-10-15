@@ -9,6 +9,7 @@ import FatalError from "./components/shared/components/FatalError"
 import Success from "./components/shared/components/Success.vue"
 import ValidationErrors from "./components/shared/components/ValidationErrors.vue"
 import storeDefiniton from "./store.js"
+import Axios from "axios";
 
 window.Vue = require('vue');
 Vue.filter("fromNowDate", value => moment(value).fromNow());
@@ -28,5 +29,13 @@ const app = new Vue({
     store,
     components: {
         Index
+    },
+    async beforeCreate() {
+        await axios.get('/sanctum/csrf-cookie');
+        await axios.post('login', {
+            email: 'wrogahn@example.org',
+            password: 'password'
+        });
+        await axios.get('/user')
     }
 });
