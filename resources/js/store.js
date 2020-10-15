@@ -1,3 +1,4 @@
+import { isLoggedIn, logOut } from "./components/shared/utils/auth"
 export default {
     state: {
         lastSearch: {
@@ -6,7 +7,9 @@ export default {
         },
         basket: {
             items: [],
-        }
+        },
+        isLoggedin: false,
+        user: {}
     },
     mutations: {
         setLastSearch(state, payload) {
@@ -20,6 +23,12 @@ export default {
         },
         setBasket(state, payload) {
             state.basket = payload;
+        },
+        setUser(state, payload) {
+            state.user = payload;
+        },
+        setLoggedin(state, payload) {
+            state.isLoggedin = payload;
         }
     },
     actions: {
@@ -49,6 +58,22 @@ export default {
         clearBasket({ commit, state }, payload) {
             commit('setBasket', { items: [] })
             localStorage.setItem("basket", JSON.stringify(state.basket))
+        },
+        async loadUser({ commit, dispatch }) {
+            if (isLoggedIn()) {
+                try {
+                    const userr = (await axios.get('/user')).data;
+                    commit('setUser', userr);
+                    commit('setLoggedin', true)
+                } catch (error) {
+                    dispatch('logout')
+                }
+            }
+        },
+        logout({ commit }) {
+            commit("setUser", {});
+            commit("setLoggedin", false);
+            logOut();
         }
     },
     getters: {

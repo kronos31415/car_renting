@@ -23,6 +23,16 @@ Vue.component("validation-errors", ValidationErrors)
 
 const store = new Vuex.Store(storeDefiniton);
 
+window.axios.interceptors.request.use(
+    response => response,
+    error => {
+        if (error.response.status == 401) {
+            this.$store.dispatch('logout');
+        }
+        return Promise.reject(error)
+    }
+)
+
 const app = new Vue({
     el: '#app',
     router,
@@ -31,6 +41,6 @@ const app = new Vue({
         Index
     },
     async beforeCreate() {
-
+        this.$store.dispatch('loadUser')
     }
 });
