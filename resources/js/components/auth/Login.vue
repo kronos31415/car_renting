@@ -16,8 +16,8 @@
                 </div>
                 <button class="btn btn-primary btn-block" :disabled="isLoading" @click.prevent="login">Login</button>
                 <hr/>
-                <div><i class="fas fa-pen"></i> No account yet? <router-link :to="{name: 'home'}">Register</router-link></div>
-                <div><i class="fas fa-brain"></i> Forgot Password? <router-link :to="{name: 'home'}">Reset Password</router-link></div>
+                <div><i class="fas fa-pen"></i> No account yet? <router-link :to="{name: 'register'}">Register</router-link></div>
+                <div><i class="fas fa-brain"></i> Forgot Password? <router-link :to="{name: 'reset'}">Reset Password</router-link></div>
             </form>
         </div>
         

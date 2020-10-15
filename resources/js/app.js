@@ -41,6 +41,11 @@ const app = new Vue({
         Index
     },
     async beforeCreate() {
-        this.$store.dispatch('loadUser')
+        this.$store.dispatch('loadUser');
+        if (this.$store.state.isLoggedin == false) {
+            axios.post('/logout');
+            this.$store.dispatch('logout');
+            this.$router.push({ name: "login" })
+        }
     }
 });

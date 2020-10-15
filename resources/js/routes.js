@@ -4,6 +4,7 @@ import Bookable from "./components/bookable/Bookable"
 import Review from "./components/reviews/Review"
 import Basket from "./components/basket/Basket"
 import Login from "./components/auth/Login"
+import Register from "./components/auth/Registration"
 
 const routes = [{
         path: "/",
@@ -29,7 +30,18 @@ const routes = [{
         path: "/auth/login",
         component: Login,
         name: "login"
-    }
+    },
+    {
+        path: "/logout",
+        component: Login,
+        name: "logout"
+    },
+    {
+        path: "/auth/register",
+        component: Register,
+        name: "register"
+    },
+
 ]
 
 const router = new VueRouter({

@@ -2,10 +2,23 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
             <router-link :to="{name: 'home', params: {}}" class="navbar-brand mr-auto">Link to Home PAge</router-link>
-            <router-link class="btn nav-button basket" :to="{name: 'basket'}">
-               <i class="fas fa-shopping-cart fa-lg"></i>
-               <span v-if="itemsInBasket" class="badge badge-pill badge-success">{{itemsInBasket}}</span>
-            </router-link>
+            <ul class="navbar-nav">
+                <li class="nav-item" v-if="isLoggedin">
+                    <router-link class="nav-link basket" :to="{name: 'basket'}">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                        <span v-if="itemsInBasket" class="badge badge-pill badge-success">{{itemsInBasket}}</span>
+                    </router-link>
+                </li>
+                <li class="nav-item" v-if="!isLoggedin">
+                    <router-link :to="{name: 'register'}"><button class="btn btn-primary btn-sm mr-2">Register</button></router-link>
+                </li>
+                <li class="nav-item" v-if="!isLoggedin">
+                    <router-link :to="{name: 'login'}"><button class="btn btn-primary btn-sm">Login</button></router-link>
+                </li>
+                <li class="nav-item" v-if="isLoggedin">
+                    <a href="#" class="nav-link" @click.prevent="logout"><button class="btn btn-primary btn-sm">Logout</button></a>
+                </li>
+            </ul>
         </nav>
         <div class="container mt-5 mb-5 pr-5 pl-5">
             <router-view></router-view>
@@ -24,11 +37,24 @@ export default {
     },
     computed: {
         ...mapState({
-            lastSearchComputed: "lastSearch"
+            lastSearchComputed: "lastSearch",
+            isLoggedin: 'isLoggedin'
         }),
         ...mapGetters({
             itemsInBasket: "itemsInBasket"
         })
+    },
+    methods: {
+        async logout() {
+            try {
+                axios.post('/logout');
+                this.$store.dispatch('logout');
+                this.$router.push({name: 'login'})
+            } catch (error) {
+                this.$store.dispatch('logout');
+                this.$router.push({name: 'login'})
+            }
+        }
     },
     beforeCreate() {
         this.$store.dispatch('loadStoredState')
