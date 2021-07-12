@@ -1,7 +1,7 @@
 <template>
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-            <router-link :to="{name: 'home', params: {}}" class="navbar-brand mr-auto">Link to Home PAge</router-link>
+            <router-link v-if="isLoggedin" :to="{name: 'home', params: {}}" class="navbar-brand mr-auto">Link to Home PAge</router-link>
             <ul class="navbar-nav">
                 <li class="nav-item" v-if="isLoggedin">
                     <router-link class="nav-link basket" :to="{name: 'basket'}">

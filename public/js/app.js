@@ -61802,14 +61802,16 @@ var render = function() {
           "navbar navbar-expand-lg navbar-light bg-white border-bottom"
       },
       [
-        _c(
-          "router-link",
-          {
-            staticClass: "navbar-brand mr-auto",
-            attrs: { to: { name: "home", params: {} } }
-          },
-          [_vm._v("Link to Home PAge")]
-        ),
+        _vm.isLoggedin
+          ? _c(
+              "router-link",
+              {
+                staticClass: "navbar-brand mr-auto",
+                attrs: { to: { name: "home", params: {} } }
+              },
+              [_vm._v("Link to Home PAge")]
+            )
+          : _vm._e(),
         _vm._v(" "),
         _c("ul", { staticClass: "navbar-nav" }, [
           _vm.isLoggedin

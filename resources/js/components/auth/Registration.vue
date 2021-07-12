@@ -56,7 +56,6 @@ export default {
             this.isLoading = true;
             this.errors = null;
             try {
-                
                 const response = await axios.post('/register', this.user);
                 if(response.status == 201) {
                     logIn();
